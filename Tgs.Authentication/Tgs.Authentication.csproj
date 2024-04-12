@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SqlQueryToolsConnectionString />
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>$(IntermediateOutputPath)document.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,14 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authentication.Core\Authentication.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="D:\Users\Phoenix\source\repos\Tgs.Authentication\Tgs.Authentication\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="D:\Users\Phoenix\source\repos\Tgs.Authentication\Tgs.Authentication\.editorconfig" />
   </ItemGroup>
 
 </Project>

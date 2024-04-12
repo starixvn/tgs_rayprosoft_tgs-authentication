@@ -1,4 +1,5 @@
-﻿using FluentdForward.OpenTelemetry.MessagePack;
+﻿using System.Reflection;
+using FluentdForward.OpenTelemetry.MessagePack;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -35,7 +36,7 @@ var builder = WebApplication.CreateBuilder(args);
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthenticationService", Version = "v1" });
 
-            var xml = $"document.xml";
+            var xml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var path = Path.Combine(AppContext.BaseDirectory, xml);
             if (File.Exists(path))
                 c.IncludeXmlComments(path);
