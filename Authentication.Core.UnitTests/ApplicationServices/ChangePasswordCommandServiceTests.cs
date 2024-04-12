@@ -33,8 +33,7 @@ public class ChangePasswordCommandServiceTests
         _ = fakeTgsRepository.GetAccountAsync(Arg.Is(command.AccountId))
             .Returns(new AccountSnapshot(
                 command.AccountId,
-                "test1",
-                Guid.NewGuid(),
+                "test:Brand:test1",
                 "test",
                 "unknown",
                 "1234567",

@@ -12,7 +12,7 @@ namespace Tgs.Authentication.Controllers;
 [ApiController]
 public class SessionController : ControllerBase
 {
-    [HttpPost("{system}", Name = "Login")]
+    [HttpPost("{system}:login", Name = "Login")]
     public async Task<IActionResult> LoginAsync(
         [FromServices] IGetService<LoginCommand, Account?> loginService,
         string system,
@@ -34,10 +34,9 @@ public class SessionController : ControllerBase
         var claimsPrincipal = new ClaimsPrincipal(
             new ClaimsIdentity(
                 [
-                    new Claim(ClaimTypes.Name, loginAccount.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, loginAccount.Id.ToString()),
-                    new Claim("brand", loginAccount.BrandId.ToString()),
-                    new Claim("system", loginAccount.System)
+                    new Claim(ClaimTypes.NameIdentifier, loginAccount.IdentityName),
+                    new Claim("system", loginAccount.System),
+                    new Claim("account_id", loginAccount.Id.ToString())
                 ],
                 BearerTokenDefaults.AuthenticationScheme));
 

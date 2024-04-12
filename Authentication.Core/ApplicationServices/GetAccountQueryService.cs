@@ -14,11 +14,10 @@ internal class GetAccountQueryService(
 		return originSnapshot is null
 			? null
 			: new Account(
-			originSnapshot.Id,
-			originSnapshot.UserName,
-			originSnapshot.BrandId,
-			originSnapshot.System,
-			originSnapshot.Algorithm,
-			originSnapshot.PasswordHash);
+				originSnapshot.Id,
+				originSnapshot.IdentityName,
+				originSnapshot.System,
+				originSnapshot.Algorithm,
+				originSnapshot.PasswordHash);
 	}
 }

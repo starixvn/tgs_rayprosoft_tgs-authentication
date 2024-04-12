@@ -15,8 +15,7 @@ internal class CreateAccountCommandService(
 
 		var accountSnapshot = new AccountSnapshot(
 			Guid.NewGuid(),
-			command.UserName,
-			command.BrandId,
+			command.IdentityName,
 			command.System,
 			hashAlgorithmFactory.DefaultAlgorithmName,
 			await hasher.ComputeHashAsync(

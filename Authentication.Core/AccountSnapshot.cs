@@ -5,8 +5,7 @@ using Json.Pointer;
 namespace Tgs.Authentication;
 public record AccountSnapshot(
 	Guid Id,
-	string UserName,
-	Guid BrandId,
+	string IdentityName,
 	string System,
 	string Algorithm,
 	string PasswordHash,

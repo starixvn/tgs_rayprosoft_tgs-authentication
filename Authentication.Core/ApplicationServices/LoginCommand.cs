@@ -2,5 +2,5 @@
 public record LoginCommand(
 	string System,
 	Guid BrandId,
-	string UserName,
+	string IdentityName,
 	string Password);

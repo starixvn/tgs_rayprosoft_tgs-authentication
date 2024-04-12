@@ -12,7 +12,7 @@ internal class LoginCommandService(
 		var account = await tgsRepository.GetLoginAccountAsync(
 			command.System,
 			command.BrandId,
-			command.UserName,
+			command.IdentityName,
 			cancellationToken).ConfigureAwait(false);
 
 		if (account is null)

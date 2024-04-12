@@ -76,6 +76,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.MapControllers();
     app.MapSwagger();
     app.UseSwaggerUI();
     app.MapHealthChecks("/healthz");

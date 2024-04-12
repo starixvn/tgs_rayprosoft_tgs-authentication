@@ -28,8 +28,7 @@ public class LoginCommandServiceTests
 
         var account = new Account(
             Guid.NewGuid(),
-            command.UserName,
-            command.BrandId,
+            command.IdentityName,
             command.System,
             defaultHasher.AlgorithmName,
             passwordHash);
@@ -37,7 +36,7 @@ public class LoginCommandServiceTests
         _ = fakeTgsRepository.GetLoginAccountAsync(
             Arg.Is(command.System),
             Arg.Is(command.BrandId),
-            Arg.Is(command.UserName))
+            Arg.Is(command.IdentityName))
             .Returns(account);
 
         // Act
