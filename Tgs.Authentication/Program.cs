@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using FluentdForward.OpenTelemetry.MessagePack;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -11,16 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddOpenTelemetry(options =>
         {
             options.IncludeFormattedMessage = true;
-            options.ParseStateValues = true;
-            _ = options.AddFluentdForwardExporter(fluentOptions =>
-            {
-                var nodeIp = builder.Configuration.GetValue<string>("NODE_IP")!;
-                fluentOptions.Host = nodeIp;
-                fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
-                fluentOptions.UseMessagePack(LogRecordFormatterResolver.GetResolverInstanceWithExtendInfo(
-                    "MachineName",
-                    () => Environment.MachineName));
-            });
+            options.AddOtlpExporter();
         });
 
     _ = builder.Services
@@ -45,10 +36,10 @@ var builder = WebApplication.CreateBuilder(args);
     var instrumentationExtenionFilters = new[] { "html", "ico", "png", "jpg" };
     _ = builder.Services
         .AddOpenTelemetry()
+        .ConfigureResource(resourceBuilder => resourceBuilder
+            .AddEnvironmentVariableDetector())
         .WithTracing(
             tracingBuilder => tracingBuilder
-                .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddEnvironmentVariableDetector())
                 .AddSource("Tgs.*")
                 .AddSource("TGS.*")
                 .AddSource("Valhalla.*")
@@ -58,13 +49,13 @@ var builder = WebApplication.CreateBuilder(args);
                         && !httpContext.Request.Path.StartsWithSegments("/healthz")
                         && !httpContext.Request.Path.StartsWithSegments("/metrics")
                         && !httpContext.Request.Path.StartsWithSegments("/profiler/")
+                        && !httpContext.Request.Path.StartsWithSegments("/_vs/")
+                        && !httpContext.Request.Path.StartsWithSegments("/_framework/")
                         && !instrumentationExtenionFilters.Any(
                             ext => httpContext.Request.Path.Value.EndsWith($".{ext}")))
                 .AddProfileViewExporter()
                 .AddOtlpExporter())
         .WithMetrics(meterBuilder => meterBuilder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddEnvironmentVariableDetector())
             .AddAspNetCoreInstrumentation()
             .AddRuntimeInstrumentation()
             .AddOtlpExporter())

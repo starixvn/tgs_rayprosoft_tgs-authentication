@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SqlQueryToolsConnectionString />
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <RootNamespace>Tgs.Authentication</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
