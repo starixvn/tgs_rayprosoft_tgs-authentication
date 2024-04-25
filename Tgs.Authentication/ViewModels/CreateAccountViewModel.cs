@@ -2,11 +2,9 @@
 
 public class CreateAccountViewModel
 {
-	public required string System { get; set; }
+    public required string System { get; set; }
 
-	public required Guid BrandId { get; set; }
+    public required string IdentityName { get; set; }
 
-	public required string UserName { get; set; }
-
-	public required string Password { get; set; }
+    public required string Password { get; set; }
 }

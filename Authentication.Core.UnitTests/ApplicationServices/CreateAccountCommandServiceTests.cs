@@ -20,7 +20,6 @@ public class CreateAccountCommandServiceTests
 
         var command = new CreateAccountCommand(
             "test",
-            Guid.NewGuid(),
             "tester",
             "123",
             "op");
@@ -56,7 +55,6 @@ public class CreateAccountCommandServiceTests
 
         var command = new CreateAccountCommand(
             "test",
-            Guid.NewGuid(),
             "tester",
             "123",
             "op");

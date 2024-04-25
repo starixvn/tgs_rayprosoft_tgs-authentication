@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
-using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Microsoft.OpenApi.Models;
+using Tgs.Authentication.DependencyInjection;
+using Tgs.Authentication.Repositories.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -20,7 +23,11 @@ var builder = WebApplication.CreateBuilder(args);
         .Services
         .AddProblemDetails()
         .AddRouting(options => options.LowercaseUrls = true)
-        .AddControllers();
+        .AddControllers()
+        .Services
+        .AddTgsAuthentication()
+        .AddTgsAuthenticationRepositories(dbBuilder => dbBuilder
+            .UseNpgsql("name=Tgs"));
 
     _ = builder.Services
         .AddSwaggerGen(c =>
