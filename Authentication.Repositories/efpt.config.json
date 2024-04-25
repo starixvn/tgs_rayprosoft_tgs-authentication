@@ -1,0 +1,56 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "TgsContext",
+   "ContextNamespace": "Entities",
+   "FilterSchemas": true,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "Entities",
+   "OutputContextPath": "Models",
+   "OutputPath": "Models\\Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Tgs.Authentication.Repositories",
+   "Schemas": [
+      {
+         "Name": "tgs2"
+      }
+   ],
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "tgs2.account_event_sources",
+         "ObjectType": 0
+      },
+      {
+         "Name": "tgs2.accounts",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": [
+      "Data",
+      "Status"
+   ],
+   "UseBoolPropertiesWithoutDefaultSql": true,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": true,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": true,
+   "UseNoDefaultConstructor": true,
+   "UseNoNavigations": true,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": true,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": true,
+   "UseSchemaNamespaces": true,
+   "UseSpatial": false,
+   "UseT4": false
+}

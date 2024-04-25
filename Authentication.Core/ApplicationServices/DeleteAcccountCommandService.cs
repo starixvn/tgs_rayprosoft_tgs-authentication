@@ -21,7 +21,7 @@ internal class DeleteAcccountCommandService(
 		var changeEventId = await serialNumberGenerator.GenerateAsync(
 			cancellationToken).ConfigureAwait(false);
 
-		var changeEvent = originSnapshot.CreateDeleteEvent(changeEventId, eventOccurTime);
+		var changeEvent = originSnapshot.CreateDeleteEvent(changeEventId, eventOccurTime, command.Operator);
 
 		await tgsRepository.AddAccountEventAsync(
 			changeEvent,

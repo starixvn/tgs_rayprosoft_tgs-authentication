@@ -4,4 +4,4 @@ public record Account(
 	string IdentityName,
 	string System,
 	string Algorithm,
-	string PasswordHash);
+	string? PasswordHash);

@@ -31,7 +31,11 @@ internal class ChangePasswordCommandService(
 		var eventOccurTime = DateTime.UtcNow;
 		var changeEventId = await serialNumberGenerator.GenerateAsync(
 			cancellationToken).ConfigureAwait(false);
-		var changeEvent = newSnapshot.CreateChangeEvent(changeEventId, originSnapshot, eventOccurTime);
+		var changeEvent = newSnapshot.CreateChangeEvent(
+			changeEventId,
+			originSnapshot,
+			eventOccurTime,
+			command.Operator);
 
 		await tgsRepository.AddAccountEventAsync(
 			changeEvent,

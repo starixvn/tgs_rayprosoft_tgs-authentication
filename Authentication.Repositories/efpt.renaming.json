@@ -1,0 +1,18 @@
+﻿[
+   {
+      "SchemaName": "tgs2",
+      "Tables": [
+         {
+            "Columns": [ ],
+            "Name": "account_event_sources",
+            "NewName": "AccountEventRow"
+         },
+         {
+            "Columns": [ ],
+            "Name": "accounts",
+            "NewName": "AccountRow"
+         }
+      ],
+      "UseSchemaName": false
+   }
+]

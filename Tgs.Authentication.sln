@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.Authentication", "Tgs.Authentication\Tgs.Authentication.csproj", "{63919ED0-4230-4A06-A51E-D9DB4267E5EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Authentication", "Tgs.Authentication\Tgs.Authentication.csproj", "{63919ED0-4230-4A06-A51E-D9DB4267E5EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Core", "Authentication.Core\Authentication.Core.csproj", "{B5555251-6F96-4F1E-B94C-1544EB0B50B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Core", "Authentication.Core\Authentication.Core.csproj", "{B5555251-6F96-4F1E-B94C-1544EB0B50B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Core.UnitTests", "Authentication.Core.UnitTests\Authentication.Core.UnitTests.csproj", "{E5EE84DB-BC8E-45DA-B1DE-AF42E3C94D96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Core.UnitTests", "Authentication.Core.UnitTests\Authentication.Core.UnitTests.csproj", "{E5EE84DB-BC8E-45DA-B1DE-AF42E3C94D96}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項目", "{E820D590-3E87-46CB-BE07-68D46D725DC6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		nuget.config = nuget.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Repositories", "Authentication.Repositories\Authentication.Repositories.csproj", "{DAA69687-4B75-4EF1-AAA7-CFA7A59868A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E5EE84DB-BC8E-45DA-B1DE-AF42E3C94D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5EE84DB-BC8E-45DA-B1DE-AF42E3C94D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5EE84DB-BC8E-45DA-B1DE-AF42E3C94D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAA69687-4B75-4EF1-AAA7-CFA7A59868A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAA69687-4B75-4EF1-AAA7-CFA7A59868A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAA69687-4B75-4EF1-AAA7-CFA7A59868A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAA69687-4B75-4EF1-AAA7-CFA7A59868A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

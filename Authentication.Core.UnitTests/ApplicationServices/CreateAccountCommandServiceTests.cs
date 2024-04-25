@@ -18,7 +18,12 @@ public class CreateAccountCommandServiceTests
             new HashAlgorithmFactory(),
             fakeSerialNumberGenerator);
 
-        var command = new CreateAccountCommand("test", Guid.NewGuid(), "tester", "123");
+        var command = new CreateAccountCommand(
+            "test",
+            Guid.NewGuid(),
+            "tester",
+            "123",
+            "op");
 
         var snapshotId = Guid.NewGuid();
         _ = fakeSerialNumberGenerator.GenerateAsync()
@@ -49,7 +54,12 @@ public class CreateAccountCommandServiceTests
             new HashAlgorithmFactory(),
             fakeSerialNumberGenerator);
 
-        var command = new CreateAccountCommand("test", Guid.NewGuid(), "tester", "123");
+        var command = new CreateAccountCommand(
+            "test",
+            Guid.NewGuid(),
+            "tester",
+            "123",
+            "op");
 
         var snapshotId = Guid.NewGuid();
         _ = fakeSerialNumberGenerator.GenerateAsync()

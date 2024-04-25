@@ -18,7 +18,8 @@ public class AccountController : ControllerBase
             viewModel.System,
             viewModel.BrandId,
             viewModel.UserName,
-            viewModel.Password);
+            viewModel.Password,
+            "system");
 
         return createService.GetAsync(command, HttpContext.RequestAborted);
     }
@@ -28,7 +29,7 @@ public class AccountController : ControllerBase
         [FromServices] ICommandService<DeleteAcccountCommand> deleteService,
         Guid accountId)
     {
-        var command = new DeleteAcccountCommand(accountId);
+        var command = new DeleteAcccountCommand(accountId, "system");
 
         return deleteService.ExecuteAsync(command, HttpContext.RequestAborted);
     }
@@ -39,7 +40,7 @@ public class AccountController : ControllerBase
         Guid accountId,
         [FromBody] string password)
     {
-        var command = new ChangePasswordCommand(accountId, password);
+        var command = new ChangePasswordCommand(accountId, password, "system");
 
         return changePasswordService.ExecuteAsync(command, HttpContext.RequestAborted);
     }

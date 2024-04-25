@@ -6,4 +6,5 @@ public record AccountEvent(
 	Guid AccountId,
 	ChangeAction Action,
 	JsonDocument ChangeSets,
-	DateTime CreatedOn);
+	DateTime CreatedOn,
+	string Operator);

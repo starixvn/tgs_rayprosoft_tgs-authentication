@@ -3,4 +3,5 @@ public record CreateAccountCommand(
 	string System,
 	Guid BrandId,
 	string IdentityName,
-	string Password);
+	string Password,
+	string Operator);

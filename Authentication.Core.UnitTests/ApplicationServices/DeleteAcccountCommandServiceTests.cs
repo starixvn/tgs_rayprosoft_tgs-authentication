@@ -15,7 +15,7 @@ public class DeleteAcccountCommandServiceTests
 
         var sut = new DeleteAcccountCommandService(fakeTgsRepository, fakeSerialNumberGenerator);
 
-        var command = new DeleteAcccountCommand(Guid.NewGuid());
+        var command = new DeleteAcccountCommand(Guid.NewGuid(), "op");
 
         var snapshotId = Guid.NewGuid();
         _ = fakeSerialNumberGenerator.GenerateAsync()
@@ -50,7 +50,7 @@ public class DeleteAcccountCommandServiceTests
 
         var sut = new DeleteAcccountCommandService(fakeTgsRepository, fakeSerialNumberGenerator);
 
-        var command = new DeleteAcccountCommand(Guid.NewGuid());
+        var command = new DeleteAcccountCommand(Guid.NewGuid(), "op");
 
         // Act
         await sut.ExecuteAsync(command);

@@ -20,8 +20,7 @@ public class SessionController : ControllerBase
     {
         var command = new LoginCommand(
             system,
-            viewModel.BrandId,
-            viewModel.UserName,
+            viewModel.IdentityName,
             viewModel.Password);
 
         var loginAccount = await loginService.GetAsync(

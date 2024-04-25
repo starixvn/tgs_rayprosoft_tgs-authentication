@@ -1,3 +1,4 @@
 ﻿namespace Tgs.Authentication.ApplicationServices;
 public record DeleteAcccountCommand(
-	Guid AccountId);
+	Guid AccountId,
+	string Operator);

@@ -8,10 +8,10 @@ public record AccountSnapshot(
 	string IdentityName,
 	string System,
 	string Algorithm,
-	string PasswordHash,
+	string? PasswordHash,
 	DateTime CreatedOn)
 {
-	public AccountEvent CreateChangeEvent(Guid eventId, AccountSnapshot? baseSnapshot, DateTime createdOn)
+	public AccountEvent CreateChangeEvent(Guid eventId, AccountSnapshot? baseSnapshot, DateTime createdOn, string modifier)
 	{
 		var changeSets = baseSnapshot is null
 			? new JsonPatch(PatchOperation.Add(
@@ -24,14 +24,16 @@ public record AccountSnapshot(
 			Id,
 			ChangeAction.Modify,
 			JsonSerializer.SerializeToDocument(changeSets),
-			createdOn);
+			createdOn,
+			modifier);
 	}
 
-	public AccountEvent CreateDeleteEvent(Guid eventId, DateTime createdOn)
+	public AccountEvent CreateDeleteEvent(Guid eventId, DateTime createdOn, string modifier)
 		=> new(
 			eventId,
 			Id,
 			ChangeAction.Delete,
 			JsonSerializer.SerializeToDocument(new JsonPatch()),
-			createdOn);
+			createdOn,
+			modifier);
 }

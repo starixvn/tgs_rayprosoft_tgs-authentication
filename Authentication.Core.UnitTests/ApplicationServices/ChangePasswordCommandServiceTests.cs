@@ -24,7 +24,7 @@ public class ChangePasswordCommandServiceTests
             new HashAlgorithmFactory(),
             fakeSerialNumberGenerator);
 
-        var command = new ChangePasswordCommand(Guid.NewGuid(), "new1234");
+        var command = new ChangePasswordCommand(Guid.NewGuid(), "new1234", "op");
 
         var snapshotId = Guid.NewGuid();
         _ = fakeSerialNumberGenerator.GenerateAsync()
@@ -64,7 +64,7 @@ public class ChangePasswordCommandServiceTests
             new HashAlgorithmFactory(),
             fakeSerialNumberGenerator);
 
-        var command = new ChangePasswordCommand(Guid.NewGuid(), "new1234");
+        var command = new ChangePasswordCommand(Guid.NewGuid(), "new1234", "op");
 
         // Act
         await sut.ExecuteAsync(command);

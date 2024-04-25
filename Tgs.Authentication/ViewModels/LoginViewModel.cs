@@ -2,9 +2,7 @@
 
 public class LoginViewModel
 {
-    public required Guid BrandId { get; set; }
-
-    public required string UserName { get; set; }
+    public required string IdentityName { get; set; }
 
     public required string Password { get; set; }
 }

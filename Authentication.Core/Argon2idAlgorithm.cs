@@ -9,11 +9,22 @@ internal class Argon2idAlgorithm : IHashAlgorithm
 {
 	public string AlgorithmName => "argon2di";
 
-	public async ValueTask<bool> ValidateAsync(string password, string passwordHash, CancellationToken cancellationToken = default)
+	public async ValueTask<bool> ValidateAsync(string? password, string? passwordHash, CancellationToken cancellationToken = default)
 	{
+		if (password is null && passwordHash is null)
+		{
+			return true;
+		}
+
+		if (passwordHash is null)
+			return false;
+
 		var splits = passwordHash.Split(".");
 		var salt = WebEncoders.Base64UrlDecode(splits[0]);
 		var hash = WebEncoders.Base64UrlDecode(splits[1]);
+
+		if (password is null)
+			return false;
 
 		var passwordByteArray = Encoding.UTF8.GetBytes(password);
 

@@ -4,8 +4,7 @@ public interface ITgsRepository
 {
 	ValueTask<Account?> GetLoginAccountAsync(
 		string system,
-		Guid brandId,
-		string userName,
+		string identityName,
 		CancellationToken cancellationToken = default);
 
 	ValueTask<AccountSnapshot?> GetAccountAsync(Guid id, CancellationToken cancellationToken = default);

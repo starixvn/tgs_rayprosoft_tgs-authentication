@@ -1,4 +1,5 @@
 ﻿using Tgs.Authentication;
+using Xunit;
 
 namespace Authentication.Core.UnitTests;
 
@@ -49,5 +50,50 @@ public class Argon2idAlgorithmTests
         // Assert
         Assert.True(actual1);
         Assert.False(actual2);
+    }
+
+    [Fact]
+    public async Task Argon2idAlgorithm_如果沒有設定密碼_輸入空的密碼會驗證成功()
+    {
+        // Arrange
+        var sut = new Argon2idAlgorithm();
+        var password = default(string);
+        var hash = default(string);
+
+        // Act
+        var actual = await sut.ValidateAsync(password, hash);
+
+        // Assert
+        Assert.True(actual);
+    }
+
+    [Fact]
+    public async Task Argon2idAlgorithm_如果有設定密碼_輸入空的密碼會驗證失敗()
+    {
+        // Arrange
+        var sut = new Argon2idAlgorithm();
+        var password = default(string);
+        var hash = await sut.ComputeHashAsync("1234");
+
+        // Act
+        var actual = await sut.ValidateAsync(password, hash);
+
+        // Assert
+        Assert.False(actual);
+    }
+
+    [Fact]
+    public async Task Argon2idAlgorithm_如果沒有設定密碼_輸入任何密碼都會驗證失敗()
+    {
+        // Arrange
+        var sut = new Argon2idAlgorithm();
+        var password = "1234";
+        var hash = default(string);
+
+        // Act
+        var actual = await sut.ValidateAsync(password, hash);
+
+        // Assert
+        Assert.False(actual);
     }
 }

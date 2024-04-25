@@ -27,7 +27,8 @@ internal class CreateAccountCommandService(
 			await serialNumberGenerator.GenerateAsync(
 				cancellationToken).ConfigureAwait(false),
 			null,
-			accountSnapshot.CreatedOn);
+			accountSnapshot.CreatedOn,
+			   command.Operator);
 
 		await tgsRepository.AddAccountEventAsync(
 			accountEvent,

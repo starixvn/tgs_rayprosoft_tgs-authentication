@@ -19,12 +19,11 @@ public class LoginCommandServiceTests
 
         var command = new LoginCommand(
             "test",
-            Guid.NewGuid(),
             "test1",
             "1234");
 
         var defaultHasher = hashAlgFactory.GetDefaultHashAlgorithm();
-        var passwordHash = await defaultHasher.ComputeHashAsync(command.Password);
+        var passwordHash = await defaultHasher.ComputeHashAsync(command.Password!);
 
         var account = new Account(
             Guid.NewGuid(),
@@ -35,7 +34,6 @@ public class LoginCommandServiceTests
 
         _ = fakeTgsRepository.GetLoginAccountAsync(
             Arg.Is(command.System),
-            Arg.Is(command.BrandId),
             Arg.Is(command.IdentityName))
             .Returns(account);
 
