@@ -85,7 +85,7 @@ public class AccountController : ControllerBase
             : new AccountViewModel
             {
                 Id = result.Id,
-                UserName = result.IdentityName
+                IdentityName = result.IdentityName
             };
     }
 }
