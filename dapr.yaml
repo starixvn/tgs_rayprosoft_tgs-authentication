@@ -1,0 +1,9 @@
+﻿apps:
+- appDirPath: Tgs.Authentication
+  appID: tgs-authentication
+  appPort: 5288
+  placementHostAddress: localhost:6050
+  command:
+  - dotnet
+  - run
+version: 1

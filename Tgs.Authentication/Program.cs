@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Microsoft.OpenApi.Models;
+using Tgs.Authentication.Actors;
 using Tgs.Authentication.DependencyInjection;
 using Tgs.Authentication.Repositories.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -16,6 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
             options.IncludeFormattedMessage = true;
             options.AddOtlpExporter();
         });
+
+    builder.Services
+        .AddActors(options => options.Actors.RegisterActor<AccountActor>());
 
     _ = builder.Services
         .AddAuthentication()
@@ -74,6 +78,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.MapActorsHandlers();
     app.MapControllers();
     app.MapSwagger();
     app.UseSwaggerUI();

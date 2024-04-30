@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapr.Actors;
+using Dapr.Actors.Client;
+using Microsoft.AspNetCore.Mvc;
+using Tgs.Authentication.Actors;
 using Tgs.Authentication.ApplicationServices;
 using Tgs.Authentication.ViewModels;
 using Tgs.ServiceUtility;
@@ -32,52 +35,59 @@ public class AccountController : ControllerBase
     /// <summary>
     /// 刪除帳號
     /// </summary>
-    /// <param name="deleteService">The delete service.</param>
+    /// <param name="actorProxyFactory">The actor proxy factory.</param>
     /// <param name="accountId">要刪除的帳號ID</param>
     /// <returns></returns>
     [HttpDelete("{accountId:Guid}", Name = "DeleteAccount")]
-    public ValueTask DeleteAccountAsync(
-        [FromServices] ICommandService<DeleteAcccountCommand> deleteService,
+    public async ValueTask DeleteAccountAsync(
+        [FromServices] IActorProxyFactory actorProxyFactory,
         Guid accountId)
     {
-        var command = new DeleteAcccountCommand(accountId, "system");
+        var actorId = new ActorId(accountId.ToString());
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
 
-        return deleteService.ExecuteAsync(command, HttpContext.RequestAborted);
+        await actor.DeleteAsync(
+            "system",
+            HttpContext.RequestAborted).ConfigureAwait(false);
     }
 
     /// <summary>
     /// 變更密碼
     /// </summary>
-    /// <param name="changePasswordService">The change password service.</param>
+    /// <param name="actorProxyFactory">The actor proxy factory.</param>
     /// <param name="accountId">帳號ID</param>
     /// <param name="password">要變更的密碼</param>
     /// <returns></returns>
     [HttpPatch("{accountId:Guid}", Name = "ChangePassword")]
-    public ValueTask ChangePasswordAsync(
-        [FromServices] ICommandService<ChangePasswordCommand> changePasswordService,
+    public async ValueTask ChangePasswordAsync(
+        [FromServices] IActorProxyFactory actorProxyFactory,
         Guid accountId,
         [FromBody] string password)
     {
-        var command = new ChangePasswordCommand(accountId, password, "system");
+        var actorId = new ActorId(accountId.ToString());
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
 
-        return changePasswordService.ExecuteAsync(command, HttpContext.RequestAborted);
+        await actor.ChangePasswordAsync(
+            password,
+            "system",
+            HttpContext.RequestAborted).ConfigureAwait(false);
     }
 
     /// <summary>
     /// 取得帳號資訊
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="actorProxyFactory">The actor proxy factory.</param>
     /// <param name="accountId">帳號ID</param>
     /// <returns></returns>
     [HttpGet("{accountId:Guid}", Name = "GetAccount")]
     public async Task<AccountViewModel?> GetAccountAsync(
-        [FromServices] IGetService<GetAccountQuery, Account?> getService,
+        [FromServices] IActorProxyFactory actorProxyFactory,
         Guid accountId)
     {
-        var query = new GetAccountQuery(accountId);
+        var actorId = new ActorId(accountId.ToString());
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
 
-        var result = await getService.GetAsync(
-            query,
+        var result = await actor.GetInfoAsync(
             HttpContext.RequestAborted).ConfigureAwait(false);
 
         return result is null
