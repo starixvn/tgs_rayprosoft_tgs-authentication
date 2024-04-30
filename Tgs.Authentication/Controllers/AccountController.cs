@@ -44,7 +44,7 @@ public class AccountController : ControllerBase
         Guid accountId)
     {
         var actorId = new ActorId(accountId.ToString());
-        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorTypeName);
 
         await actor.DeleteAsync(
             "system",
@@ -65,7 +65,7 @@ public class AccountController : ControllerBase
         [FromBody] string password)
     {
         var actorId = new ActorId(accountId.ToString());
-        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorTypeName);
 
         await actor.ChangePasswordAsync(
             password,
@@ -85,7 +85,7 @@ public class AccountController : ControllerBase
         Guid accountId)
     {
         var actorId = new ActorId(accountId.ToString());
-        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorType);
+        var actor = actorProxyFactory.CreateActorProxy<IAccountActor>(actorId, ActorConsts.AccountActorTypeName);
 
         var result = await actor.GetInfoAsync(
             HttpContext.RequestAborted).ConfigureAwait(false);

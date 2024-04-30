@@ -2,5 +2,5 @@
 
 static class ActorConsts
 {
-    public const string AccountActorType = nameof(AccountActor);
+    public const string AccountActorTypeName = nameof(AccountActor);
 }
