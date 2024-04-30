@@ -8,5 +8,5 @@ public interface IAccountActor : IActor
 
     Task DeleteAsync(string modifier, CancellationToken cancellationToken = default);
 
-    Task<AccountModel?> GetInfoAsync(CancellationToken cancellationToken = default);
+    Task<Account?> GetInfoAsync(CancellationToken cancellationToken = default);
 }
