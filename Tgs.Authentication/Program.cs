@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
+using Dapr.Actors.Client;
+using Dapr.Actors.Runtime;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -19,7 +22,26 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
     builder.Services
-        .AddActors(options => options.Actors.RegisterActor<AccountActor>());
+        .AddSingleton<IActorProxyFactory>(sp =>
+        {
+            var value = sp.GetRequiredService<IOptions<ActorRuntimeOptions>>().Value;
+
+            return new ActorProxyFactory
+            {
+                DefaultOptions =
+                {
+                    UseJsonSerialization = value.UseJsonSerialization,
+                    JsonSerializerOptions = value.JsonSerializerOptions,
+                    DaprApiToken = value.DaprApiToken,
+                    HttpEndpoint = value.HttpEndpoint
+                }
+            };
+        })
+        .AddActors(options =>
+        {
+            options.UseJsonSerialization = true;
+            options.Actors.RegisterActor<AccountActor>();
+        });
 
     _ = builder.Services
         .AddAuthentication()
