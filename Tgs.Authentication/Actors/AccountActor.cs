@@ -42,6 +42,14 @@ public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator
     {
         _accountId = Guid.Parse(Host.Id.GetId());
 
+        Logger.LogInformation("Activate {AccountId}", _accountId);
+
+        return Task.CompletedTask;
+    }
+
+    protected override Task OnDeactivateAsync()
+    {
+        Logger.LogInformation("Deactivate {AccountId}", _accountId);
         return Task.CompletedTask;
     }
 }

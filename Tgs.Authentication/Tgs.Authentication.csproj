@@ -7,6 +7,8 @@
     <SqlQueryToolsConnectionString />
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <RootNamespace>Tgs.Authentication</RootNamespace>
+    <UserSecretsId>eb6a9778-86c5-48ab-b610-bb27785c2634</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,6 +23,7 @@
     <PackageReference Include="AsyncMethodNameFixer" Version="2.3.0" />
     <PackageReference Include="Dapr.Actors.AspNetCore" Version="1.13.1" />
     <PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.3.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
