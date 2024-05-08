@@ -18,21 +18,19 @@ namespace Tgs.Authentication.Repositories.Entities.Configurations
 
             entity.ToTable("account_event_sources", "tgs2");
 
-            entity.HasIndex(e => e.AccountId, "ix_account_event_sources_by_accounts");
-
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.AccountId).HasColumnName("account_id");
             entity.Property(e => e.Action)
-                .HasMaxLength(128)
+                .HasMaxLength(256)
                 .HasColumnName("action");
             entity.Property(e => e.ChangeSets)
                 .HasColumnType("jsonb")
                 .HasColumnName("change_sets");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Operator)
-                .HasMaxLength(256)
+                .HasMaxLength(1024)
                 .HasColumnName("operator");
 
             OnConfigurePartial(entity);

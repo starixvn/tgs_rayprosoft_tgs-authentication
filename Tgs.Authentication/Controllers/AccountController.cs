@@ -1,5 +1,6 @@
 ﻿using Dapr.Actors;
 using Dapr.Actors.Client;
+using Dapr.Actors.Communication;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Authentication.Actors;
 using Tgs.Authentication.ApplicationServices;
@@ -39,7 +40,7 @@ public class AccountController : ControllerBase
     /// <param name="accountId">要刪除的帳號ID</param>
     /// <returns></returns>
     [HttpDelete("{accountId:Guid}", Name = "DeleteAccount")]
-    public async ValueTask DeleteAccountAsync(
+    public async Task DeleteAccountAsync(
         [FromServices] IActorProxyFactory actorProxyFactory,
         Guid accountId)
     {
@@ -59,7 +60,7 @@ public class AccountController : ControllerBase
     /// <param name="password">要變更的密碼</param>
     /// <returns></returns>
     [HttpPatch("{accountId:Guid}", Name = "ChangePassword")]
-    public async ValueTask ChangePasswordAsync(
+    public async Task ChangePasswordAsync(
         [FromServices] IActorProxyFactory actorProxyFactory,
         Guid accountId,
         [FromBody] string password)

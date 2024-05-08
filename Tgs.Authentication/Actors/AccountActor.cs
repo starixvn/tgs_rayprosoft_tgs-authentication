@@ -28,13 +28,22 @@ public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator
             cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Account?> GetInfoAsync(CancellationToken cancellationToken = default)
+    public async Task<AccountModel?> GetInfoAsync(CancellationToken cancellationToken = default)
     {
         var query = new GetAccountQuery(_accountId);
 
         return await serviceCoordinator.GetAsync<GetAccountQuery, Account?>(
             query,
             cancellationToken)
+            .AsTask()
+            .ToAsyncEnumerable()
+            .Where(account => account is not null)
+            .Select(account => new AccountModel
+            {
+                Id = account!.Id,
+                IdentityName = account.IdentityName
+            })
+            .SingleOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
     }
 

@@ -11,6 +11,8 @@ using OpenTelemetry.Trace;
 using Tgs.Authentication.Actors;
 using Tgs.Authentication.DependencyInjection;
 using Tgs.Authentication.Repositories.DependencyInjection;
+using System.Text.Json;
+using Microsoft.Extensions.Http.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -22,24 +24,9 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
     builder.Services
-        .AddSingleton<IActorProxyFactory>(sp =>
-        {
-            var value = sp.GetRequiredService<IOptions<ActorRuntimeOptions>>().Value;
-
-            return new ActorProxyFactory
-            {
-                DefaultOptions =
-                {
-                    UseJsonSerialization = value.UseJsonSerialization,
-                    JsonSerializerOptions = value.JsonSerializerOptions,
-                    DaprApiToken = value.DaprApiToken,
-                    HttpEndpoint = value.HttpEndpoint
-                }
-            };
-        })
         .AddActors(options =>
         {
-            options.UseJsonSerialization = true;
+            options.UseJsonSerialization = false;
             options.Actors.RegisterActor<AccountActor>();
         });
 

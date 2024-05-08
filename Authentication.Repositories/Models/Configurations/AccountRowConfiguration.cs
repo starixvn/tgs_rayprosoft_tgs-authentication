@@ -18,7 +18,7 @@ namespace Tgs.Authentication.Repositories.Entities.Configurations
 
             entity.ToTable("accounts", "tgs2");
 
-            entity.HasIndex(e => new { e.IdentityName, e.System }, "ux_accounts_by_name").IsUnique();
+            entity.HasIndex(e => new { e.IdentityName, e.System }, "uk_accounts_identity_name").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -28,12 +28,12 @@ namespace Tgs.Authentication.Repositories.Entities.Configurations
                 .HasColumnName("algorithm");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.IdentityName)
-                .HasMaxLength(512)
+                .HasMaxLength(1024)
                 .HasColumnName("identity_name");
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");
             entity.Property(e => e.System)
-                .HasMaxLength(256)
+                .HasMaxLength(128)
                 .HasColumnName("system");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
