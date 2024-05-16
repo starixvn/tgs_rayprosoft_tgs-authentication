@@ -42,6 +42,15 @@ var builder = WebApplication.CreateBuilder(args);
             })
         .AddKeyedSingleton(
             "IdentityKey",
+            (sp, _) =>
+            {
+                var securityKey = sp.GetRequiredKeyedService<RsaSecurityKey>(_);
+                var pubKey = new RsaSecurityKey(securityKey.Rsa.ExportParameters(false));
+
+                return JsonWebKeyConverter.ConvertFromRSASecurityKey(pubKey);
+            })
+        .AddKeyedSingleton(
+            "IdentityKey",
             (sp, _) => new SigningCredentials(
                 sp.GetRequiredKeyedService<RsaSecurityKey>("IdentityKey"),
                 SecurityAlgorithms.RsaSha256))

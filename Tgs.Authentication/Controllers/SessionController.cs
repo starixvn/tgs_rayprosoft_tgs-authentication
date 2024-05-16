@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Tgs.Authentication.ApplicationServices;
 using Tgs.Authentication.Models;
 using Tgs.Authentication.ViewModels;
@@ -68,4 +69,9 @@ public class SessionController : ControllerBase
             ? Forbid()
             : SignIn(ticket.Principal, ticket.Properties, BearerTokenDefaults.AuthenticationScheme);
     }
+
+    [HttpGet("jwk", Name = "GetJsonWebKey")]
+    public JsonWebKey GetJwk(
+        [FromKeyedServices("IdentityKey")] JsonWebKey jwk)
+        => jwk;
 }

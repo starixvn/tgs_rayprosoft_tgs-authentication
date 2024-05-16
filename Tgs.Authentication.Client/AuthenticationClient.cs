@@ -1,6 +1,8 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Tgs.Authentication.Client;
 
@@ -62,4 +64,52 @@ internal class AuthenticationClient(HttpClient httpClient)
 				.ToAsyncEnumerable())
 			.FirstOrDefaultAsync(cancellationToken)
 			.ConfigureAwait(false);
+
+	public ValueTask<AccessTokenResponse?> LoginAsync(
+		string system,
+		string ideneityName,
+		string password,
+		CancellationToken cancellationToken = default)
+		=> httpClient.PostAsJsonAsync(
+			$"/session/{system}:login",
+			new
+			{
+				IdentityName = ideneityName,
+				Password = password
+			},
+			_SerializerOptions,
+			cancellationToken)
+			.ToAsyncEnumerable()
+			.Where(response => response.IsSuccessStatusCode)
+			.Take(1)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<AccessTokenResponse>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.FirstOrDefaultAsync(cancellationToken);
+
+	public ValueTask<JsonWebKey> GetJsonWebKeyAsync(CancellationToken cancellationToken = default)
+		=> httpClient.GetAsync("/session/jwk", cancellationToken)
+			.ToAsyncEnumerable()
+			.Do(response => response.EnsureSuccessStatusCode())
+			.Take(1)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<JsonWebKey>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.Where(jwk => jwk is not null)
+			.Select(jwk => jwk!)
+			.SingleAsync(cancellationToken);
+
+	public ValueTask<AccessTokenResponse?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+		=> httpClient.PostAsJsonAsync(
+			$"/session/:refresh",
+			new RefreshRequest { RefreshToken = refreshToken },
+			_SerializerOptions,
+			cancellationToken)
+			.ToAsyncEnumerable()
+			.Where(response => response.IsSuccessStatusCode)
+			.Take(1)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<AccessTokenResponse>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.FirstOrDefaultAsync(cancellationToken);
 }
