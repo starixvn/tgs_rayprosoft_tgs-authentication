@@ -25,6 +25,10 @@
       {
          "Name": "tgs2.accounts",
          "ObjectType": 0
+      },
+      {
+         "Name": "tgs2.tokens",
+         "ObjectType": 0
       }
    ],
    "UiHint": null,

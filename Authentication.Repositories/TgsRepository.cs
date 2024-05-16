@@ -6,21 +6,22 @@ namespace Tgs.Authentication.Repositories;
 
 internal class TgsRepository(TgsContext dbContext)
 	: ITgsRepository
+	, ITokenRepository
 {
 	public async ValueTask<Account?> GetLoginAccountAsync(string system, string identityName, CancellationToken cancellationToken = default)
 	{
-		var findRow = await dbContext.AccountRows.FindAsync(
-			[identityName, system],
-			cancellationToken).ConfigureAwait(false);
-
-		return findRow is null
-			? null
-			: new Account(
-				findRow.Id,
-				findRow.IdentityName,
-				findRow.System,
-				findRow.Algorithm,
-				findRow.PasswordHash);
+		return await dbContext.AccountRows
+			.Where(row => row.IdentityName == identityName && row.System == system)
+			.Take(1)
+			.ToAsyncEnumerable()
+			.Select(row => new Account(
+				row.Id,
+				row.IdentityName,
+				row.System,
+				row.Algorithm,
+				row.PasswordHash))
+			.FirstOrDefaultAsync(cancellationToken)
+			.ConfigureAwait(false);
 	}
 
 	public async ValueTask<AccountSnapshot?> GetAccountAsync(Guid id, CancellationToken cancellationToken = default)
@@ -102,5 +103,41 @@ internal class TgsRepository(TgsContext dbContext)
 			_ = await dbContext.SaveChangesAsync(
 				cancellationToken).ConfigureAwait(false);
 		}
+	}
+
+	public async ValueTask SaveTicketAsync(TgsTicket ticket, CancellationToken cancellationToken = default)
+	{
+		var newRow = new Token
+		{
+			Id = ticket.Id,
+			Type = ticket.Type.ToString(),
+			Ticket = ticket.TicketData,
+			Expiry = ticket.Expiry.ToUniversalTime(),
+			Enabled = ticket.Enabled,
+			CreatedOn = DateTime.UtcNow
+		};
+
+		_ = await dbContext.Tokens.AddAsync(
+			newRow,
+			cancellationToken).ConfigureAwait(false);
+
+		_ = await dbContext.SaveChangesAsync(
+			cancellationToken).ConfigureAwait(false);
+	}
+
+	public async ValueTask<TgsTicket?> GetTicketAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var tokenRow = await dbContext.Tokens.FindAsync(
+			[id],
+			cancellationToken).ConfigureAwait(false);
+
+		return tokenRow is null
+			? null
+			: new TgsTicket(
+				tokenRow.Id,
+				Enum.Parse<TokenType>(tokenRow.Type),
+				tokenRow.Ticket,
+				tokenRow.Expiry,
+				tokenRow.Enabled);
 	}
 }

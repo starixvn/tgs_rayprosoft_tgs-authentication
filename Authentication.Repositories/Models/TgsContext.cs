@@ -19,10 +19,13 @@ public partial class TgsContext : DbContext
 
     public virtual DbSet<AccountRow> AccountRows { get; set; }
 
+    public virtual DbSet<Token> Tokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new Configurations.AccountEventRowConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AccountRowConfiguration());
+        modelBuilder.ApplyConfiguration(new Configurations.TokenConfiguration());
 
         OnModelCreatingPartial(modelBuilder);
     }

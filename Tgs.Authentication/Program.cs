@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Dapr.Actors.Client;
-using Dapr.Actors.Runtime;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -10,9 +10,8 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Tgs.Authentication.Actors;
 using Tgs.Authentication.DependencyInjection;
+using Tgs.Authentication.Models;
 using Tgs.Authentication.Repositories.DependencyInjection;
-using System.Text.Json;
-using Microsoft.Extensions.Http.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -31,8 +30,38 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
     _ = builder.Services
+        .AddKeyedSingleton(
+            "IdentityKey",
+            (sp, _) =>
+            {
+                var rsaFileContent = File.ReadAllText(builder.Configuration.GetValue<string>("Identity:SecurityKeyPath")!);
+                var rsa = RSA.Create();
+                rsa.ImportFromPem(rsaFileContent);
+
+                return new RsaSecurityKey(rsa);
+            })
+        .AddKeyedSingleton(
+            "IdentityKey",
+            (sp, _) => new SigningCredentials(
+                sp.GetRequiredKeyedService<RsaSecurityKey>("IdentityKey"),
+                SecurityAlgorithms.RsaSha256))
+        .AddKeyedSingleton(
+            "IdentityKey",
+            (sp, _) => JsonWebKeyConverter.ConvertFromRSASecurityKey(
+                new RsaSecurityKey(sp.GetRequiredKeyedService<RsaSecurityKey>("IdentityKey")
+                    .Rsa
+                    .ExportParameters(false))))
+        .AddSingleton(sp => new TicketDataProtector(
+            Convert.FromBase64String(builder.Configuration.GetValue<string>("Identity:Key")!),
+            Convert.FromBase64String(builder.Configuration.GetValue<string>("Identity:IV")!)))
         .AddAuthentication()
-        .AddBearerToken()
+        .AddScheme<TgsTokenOptions, TgsTokenHandler>(
+            BearerTokenDefaults.AuthenticationScheme,
+            null)
+        .Services
+        .AddOptions<TgsTokenOptions>(BearerTokenDefaults.AuthenticationScheme)
+        .Configure<IServiceProvider>((options, sp) => options.SigningCredentials =
+            sp.GetRequiredKeyedService<SigningCredentials>("IdentityKey"))
         .Services
         .AddProblemDetails()
         .AddRouting(options => options.LowercaseUrls = true)

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Authentication.ApplicationServices;
+using Tgs.Authentication.Models;
 using Tgs.Authentication.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -33,12 +35,37 @@ public class SessionController : ControllerBase
         var claimsPrincipal = new ClaimsPrincipal(
             new ClaimsIdentity(
                 [
-                    new Claim(ClaimTypes.NameIdentifier, loginAccount.IdentityName),
-                    new Claim("system", loginAccount.System),
-                    new Claim("account_id", loginAccount.Id.ToString())
+                    new Claim(ClaimTypes.Name, loginAccount.IdentityName),
+                    new Claim(TgsClaimTypes.AccountId, loginAccount.Id.ToString()),
+                    new Claim(TgsClaimTypes.SessionId, Guid.NewGuid().ToString()),
+                    new Claim(TgsClaimTypes.System, system)
                 ],
                 BearerTokenDefaults.AuthenticationScheme));
 
         return SignIn(claimsPrincipal);
+    }
+
+    [HttpPost(":refresh", Name = "Refresh")]
+    public async Task<IActionResult> RefreshAsync(
+        [FromServices] IGetService<GetRefreshTicketQuery, TgsTicket?> getService,
+        [FromServices] TicketDataProtector ticketDataProtector,
+        [FromBody] RefreshRequest refreshRequest)
+    {
+        var refreshTokenId = Guid.Parse(refreshRequest.RefreshToken);
+
+        var query = new GetRefreshTicketQuery(refreshTokenId);
+
+        var tgsTicket = await getService.GetAsync(
+            query,
+            HttpContext.RequestAborted).ConfigureAwait(false);
+
+        if (tgsTicket is null)
+            return Forbid();
+
+        var ticket = TicketSerializer.Default.Deserialize(ticketDataProtector.Unprotect(tgsTicket.TicketData));
+
+        return ticket is null
+            ? Forbid()
+            : SignIn(ticket.Principal, ticket.Properties, BearerTokenDefaults.AuthenticationScheme);
     }
 }
