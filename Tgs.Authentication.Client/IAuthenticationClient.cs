@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Tgs.Authentication.Client;
 
@@ -13,7 +12,7 @@ public interface IAuthenticationClient
 
 	ValueTask<AccessTokenResponse?> LoginAsync(string system, string ideneityName, string password, CancellationToken cancellationToken = default);
 
-	ValueTask<JsonWebKey> GetJsonWebKeyAsync(CancellationToken cancellationToken = default);
+	ValueTask<TokenConfiguration> GetJsonWebKeyAsync(CancellationToken cancellationToken = default);
 
 	ValueTask<AccessTokenResponse?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 }

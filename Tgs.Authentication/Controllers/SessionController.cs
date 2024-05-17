@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Tgs.Authentication.ApplicationServices;
 using Tgs.Authentication.Models;
@@ -71,7 +72,12 @@ public class SessionController : ControllerBase
     }
 
     [HttpGet("jwk", Name = "GetJsonWebKey")]
-    public JsonWebKey GetJwk(
-        [FromKeyedServices("IdentityKey")] JsonWebKey jwk)
-        => jwk;
+    public TokenConfigurationViewModel GetJwk(
+        [FromKeyedServices("IdentityKey")] JsonWebKey jwk,
+        [FromServices] IOptions<TgsTokenOptions> optionsAccessor)
+        => new()
+        {
+            Issuer = optionsAccessor.Value.Issuer,
+            JsonWebKey = jwk
+        };
 }

@@ -2,7 +2,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Tgs.Authentication.Client;
 
@@ -87,13 +86,13 @@ internal class AuthenticationClient(HttpClient httpClient)
 				.ToAsyncEnumerable())
 			.FirstOrDefaultAsync(cancellationToken);
 
-	public ValueTask<JsonWebKey> GetJsonWebKeyAsync(CancellationToken cancellationToken = default)
+	public ValueTask<TokenConfiguration> GetJsonWebKeyAsync(CancellationToken cancellationToken = default)
 		=> httpClient.GetAsync("/session/jwk", cancellationToken)
 			.ToAsyncEnumerable()
 			.Do(response => response.EnsureSuccessStatusCode())
 			.Take(1)
 			.SelectMany(response => response.Content
-				.ReadFromJsonAsync<JsonWebKey>(_SerializerOptions, cancellationToken)
+				.ReadFromJsonAsync<TokenConfiguration>(_SerializerOptions, cancellationToken)
 				.ToAsyncEnumerable())
 			.Where(jwk => jwk is not null)
 			.Select(jwk => jwk!)
