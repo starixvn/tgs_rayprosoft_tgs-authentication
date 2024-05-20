@@ -4,7 +4,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.Authentication.Actors;
 
-public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator)
+public class AccountActor(ActorHost host, IServiceProvider serviceProvider)
     : Actor(host)
     , IAccountActor
 {
@@ -12,6 +12,10 @@ public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator
 
     public async Task DeleteAsync(string modifier, CancellationToken cancellationToken = default)
     {
+        var scope = serviceProvider.CreateAsyncScope();
+        await using var _ = scope.ConfigureAwait(false);
+        var serviceCoordinator = scope.ServiceProvider.GetRequiredService<IServiceCoordinator>();
+
         var command = new DeleteAcccountCommand(_accountId, modifier);
 
         await serviceCoordinator.ExecuteAsync(
@@ -21,6 +25,10 @@ public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator
 
     public async Task ChangePasswordAsync(string newPassword, string modifier, CancellationToken cancellationToken = default)
     {
+        var scope = serviceProvider.CreateAsyncScope();
+        await using var _ = scope.ConfigureAwait(false);
+        var serviceCoordinator = scope.ServiceProvider.GetRequiredService<IServiceCoordinator>();
+
         var command = new ChangePasswordCommand(_accountId, newPassword, modifier);
 
         await serviceCoordinator.ExecuteAsync(
@@ -30,6 +38,10 @@ public class AccountActor(ActorHost host, IServiceCoordinator serviceCoordinator
 
     public async Task<AccountModel?> GetInfoAsync(CancellationToken cancellationToken = default)
     {
+        var scope = serviceProvider.CreateAsyncScope();
+        await using var _ = scope.ConfigureAwait(false);
+        var serviceCoordinator = scope.ServiceProvider.GetRequiredService<IServiceCoordinator>();
+
         var query = new GetAccountQuery(_accountId);
 
         return await serviceCoordinator.GetAsync<GetAccountQuery, Account?>(
