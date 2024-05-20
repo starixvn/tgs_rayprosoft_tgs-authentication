@@ -138,14 +138,14 @@ class TgsTokenHandler(
         return new AuthenticationTicket(user, refreshProperties, $"{Scheme.Name}:RefreshToken");
     }
 
-    public string CreateJwtTokenString(Guid jti, AuthenticationTicket ticket)
+    private string CreateJwtTokenString(Guid jti, AuthenticationTicket ticket)
     {
         var identity = new ClaimsIdentity([
             new Claim(JwtRegisteredClaimNames.Sub, ticket.Principal.Identity!.Name!),
             new Claim(JwtRegisteredClaimNames.Jti, jti.ToString()),
-            new Claim("system", ticket.Principal.FindFirstValue(TgsClaimTypes.System) ?? string.Empty),
-            new Claim("account_id", ticket.Principal.FindFirstValue(TgsClaimTypes.AccountId) ?? string.Empty),
-            new Claim("session_id", ticket.Principal.FindFirstValue(TgsClaimTypes.SessionId) ?? string.Empty)
+            new Claim(TgsClaimTypes.System, ticket.Principal.FindFirstValue(TgsClaimTypes.System) ?? string.Empty),
+            new Claim(TgsClaimTypes.AccountId, ticket.Principal.FindFirstValue(TgsClaimTypes.AccountId) ?? string.Empty),
+            new Claim(TgsClaimTypes.SessionId, ticket.Principal.FindFirstValue(TgsClaimTypes.SessionId) ?? string.Empty)
         ]);
 
         var tokenDescriptor = new SecurityTokenDescriptor

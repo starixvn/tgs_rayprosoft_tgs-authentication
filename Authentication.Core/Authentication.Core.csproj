@@ -22,4 +22,8 @@
     <PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tgs.Authentication.Common\Tgs.Authentication.Common.csproj" />
+  </ItemGroup>
+
 </Project>

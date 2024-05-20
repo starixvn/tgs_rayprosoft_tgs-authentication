@@ -8,6 +8,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Tgs.Authentication;
 using Tgs.Authentication.Actors;
 using Tgs.Authentication.DependencyInjection;
 using Tgs.Authentication.Models;
@@ -65,7 +66,7 @@ var builder = WebApplication.CreateBuilder(args);
             Convert.FromBase64String(builder.Configuration.GetValue<string>("Identity:IV")!)))
         .AddAuthentication()
         .AddScheme<TgsTokenOptions, TgsTokenHandler>(
-            BearerTokenDefaults.AuthenticationScheme,
+            TgsBearerDefaults.AuthenticationScheme,
             null)
         .Services
         .AddOptions<TgsTokenOptions>(BearerTokenDefaults.AuthenticationScheme)

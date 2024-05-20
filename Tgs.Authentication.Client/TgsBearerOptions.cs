@@ -14,10 +14,15 @@ public class TgsBearerOptions : AuthenticationSchemeOptions
 	};
 
 	public IConfigurationManager<TokenConfiguration>? ConfigurationManager { get; set; }
-	public TokenValidationParameters TokenValidationParameters { get; set; } = new TokenValidationParameters();
-	public IList<TokenHandler> TokenHandlers { get; private set; }
 
+	public TokenValidationParameters TokenValidationParameters { get; set; } = new()
+	{
+		ValidateAudience = false
+	};
+
+	public IList<TokenHandler> TokenHandlers { get; private set; }
 	public bool RefreshOnIssuerKeyNotFound { get; set; } = true;
+
 	public TgsBearerOptions()
 	{
 		TokenHandlers = [_defaultTokenHandler];

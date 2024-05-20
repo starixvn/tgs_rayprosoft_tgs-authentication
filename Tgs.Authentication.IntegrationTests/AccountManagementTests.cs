@@ -2,18 +2,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Tgs.Authentication.Client;
 using Tgs.Authentication.Repositories.Entities;
 using Tgs.Authentication.Repositories.Entities.tgs2Schema;
 using Xunit.Abstractions;
-using NSubstitute;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Tgs.Authentication.Actors;
-using Dapr.Actors;
-using Dapr.Actors.Runtime;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
 
 namespace Tgs.Authentication.IntegrationTests;
 
