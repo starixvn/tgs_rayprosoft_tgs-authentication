@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using Dapr.Actors.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Tgs.Authentication.Client;
 using Tgs.Authentication.Models;
@@ -81,7 +83,9 @@ public class LoginSessionTests(ITestOutputHelper testOutputHelper)
         // Arrange
         await using var web = AuthenticationTestHost.Instance
             .WithWebHostBuilder(hostBuilder => hostBuilder
-                .ConfigureLogging(logging => logging.AddXUnit(testOutputHelper)));
+                .ConfigureLogging(logging => logging.AddXUnit(testOutputHelper))
+                .ConfigureServices(services => services
+                    .Replace(ServiceDescriptor.Singleton<IActorProxyFactory, StubActorProxyFactory>())));
 
         var client = web.CreateDefaultClient();
 

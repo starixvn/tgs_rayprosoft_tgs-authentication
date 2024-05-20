@@ -1,0 +1,2 @@
+﻿namespace Tgs.Authentication.ApplicationServices;
+public record SetRefreshTokenUsedCommand(Guid RefreshTokenId);

@@ -35,6 +35,18 @@ internal class StubActorProxyFactory(IServiceProvider serviceProvider)
 
             return actor;
         }
+        else if (actorInterfaceType.IsAssignableFrom(typeof(RefreshTokenActor)))
+        {
+            var actor = ActivatorUtilities.CreateInstance<RefreshTokenActorForTest>(
+                serviceProvider.CreateScope().ServiceProvider,
+                ActorHost.CreateForTest<AccountActor>(new ActorTestOptions
+                {
+                    ActorId = actorId
+                }));
+            actor.Activate();
+
+            return actor;
+        }
         else
             throw new NotImplementedException();
     }

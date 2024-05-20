@@ -140,4 +140,18 @@ internal class TgsRepository(TgsContext dbContext)
 				tokenRow.Expiry,
 				tokenRow.Enabled);
 	}
+
+	public async ValueTask EnableTicketAsync(Guid id, bool isEnabled, CancellationToken cancellationToken = default)
+	{
+		var tokenRow = await dbContext.Tokens.FindAsync(
+			[id],
+			cancellationToken).ConfigureAwait(false);
+
+		if (tokenRow is null)
+			return;
+
+		tokenRow.Enabled = isEnabled;
+
+		_ = await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+	}
 }

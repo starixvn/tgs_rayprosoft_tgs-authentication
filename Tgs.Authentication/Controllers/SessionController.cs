@@ -1,11 +1,13 @@
 ﻿using System.Security.Claims;
-using Google.Api;
+using Dapr.Actors;
+using Dapr.Actors.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Tgs.Authentication.Actors;
 using Tgs.Authentication.ApplicationServices;
 using Tgs.Authentication.Models;
 using Tgs.Authentication.ViewModels;
@@ -50,26 +52,25 @@ public class SessionController : ControllerBase
 
     [HttpPost(":refresh", Name = "Refresh")]
     public async Task<IActionResult> RefreshAsync(
-        [FromServices] IGetService<GetRefreshTicketQuery, TgsTicket?> getService,
+        [FromServices] IActorProxyFactory actorProxyFactory,
         [FromServices] TicketDataProtector ticketDataProtector,
         [FromBody] RefreshRequest refreshRequest)
     {
-        var refreshTokenId = Guid.Parse(refreshRequest.RefreshToken);
+        var actorId = new ActorId(refreshRequest.RefreshToken);
+        var actor = actorProxyFactory.CreateActorProxy<IRefreshTokenActor>(actorId, ActorConsts.RefreshTokenActorTypeName);
 
-        var query = new GetRefreshTicketQuery(refreshTokenId);
-
-        var tgsTicket = await getService.GetAsync(
-            query,
-            HttpContext.RequestAborted).ConfigureAwait(false);
+        var tgsTicket = await actor.GetRefreshTicketAsync(HttpContext.RequestAborted).ConfigureAwait(false);
 
         if (tgsTicket is null)
             return Forbid();
 
         var ticket = TicketSerializer.Default.Deserialize(ticketDataProtector.Unprotect(tgsTicket.TicketData));
 
-        return ticket is null
-            ? Forbid()
-            : SignIn(ticket.Principal, ticket.Properties, BearerTokenDefaults.AuthenticationScheme);
+        if (ticket is null)
+            return Forbid();
+
+        await actor.SetUsedAsync(HttpContext.RequestAborted).ConfigureAwait(false);
+        return SignIn(ticket.Principal, ticket.Properties, BearerTokenDefaults.AuthenticationScheme);
     }
 
     [HttpGet("jwk", Name = "GetJsonWebKey")]

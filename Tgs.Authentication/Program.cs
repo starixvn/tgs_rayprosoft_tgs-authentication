@@ -28,6 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
         {
             options.UseJsonSerialization = false;
             options.Actors.RegisterActor<AccountActor>();
+            options.Actors.RegisterActor<RefreshTokenActor>();
         });
 
     _ = builder.Services
