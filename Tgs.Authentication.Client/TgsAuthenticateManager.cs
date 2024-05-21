@@ -6,23 +6,24 @@ using Microsoft.IdentityModel.Tokens;
 namespace Tgs.Authentication.Client;
 
 public class TgsAuthenticateManager(
-	IOptions<TgsBearerOptions> optionsAccessor,
+	IOptionsMonitor<TgsBearerOptions> optionsMonitor,
 	ILogger<TgsAuthenticateManager> logger)
 {
-	private TgsBearerOptions Options { get; } = optionsAccessor.Value;
-
 	public async Task<AuthenticationTicket?> ValidateTokenAsync(
 		string token,
 		string scheme,
 		IList<Exception> validationFailures,
 		CancellationToken cancellationToken = default)
 	{
+		var options = optionsMonitor.Get(scheme);
 		var tvp = await SetupTokenValidationParametersAsync(
+			options,
 			cancellationToken).ConfigureAwait(false);
+
 		SecurityToken validatedToken = null!;
 		ClaimsPrincipal principal = null!;
 
-		foreach (TokenHandler tokenHandler in Options.TokenHandlers)
+		foreach (TokenHandler tokenHandler in options.TokenHandlers)
 		{
 			try
 			{
@@ -37,6 +38,7 @@ public class TgsAuthenticateManager(
 				}
 
 				RecordTokenValidationError(
+					options,
 					tokenValidationResult.Exception ?? new SecurityTokenValidationException(
 						$"The TokenHandler: '{tokenHandler}', was unable to validate the Token."),
 					validationFailures);
@@ -46,7 +48,7 @@ public class TgsAuthenticateManager(
 			{
 				validationFailures ??= new List<Exception>(1);
 
-				RecordTokenValidationError(exception, validationFailures);
+				RecordTokenValidationError(options, exception, validationFailures);
 				continue;
 			}
 		}
@@ -78,7 +80,7 @@ public class TgsAuthenticateManager(
 	private static DateTime? GetSafeDateTime(DateTime dateTime)
 		=> dateTime == DateTime.MinValue ? null : dateTime;
 
-	private void RecordTokenValidationError(Exception exception, IList<Exception> exceptions)
+	private void RecordTokenValidationError(TgsBearerOptions options, Exception exception, IList<Exception> exceptions)
 	{
 		if (exception != null)
 		{
@@ -86,19 +88,21 @@ public class TgsAuthenticateManager(
 			exceptions.Add(exception);
 		}
 
-		if (Options.RefreshOnIssuerKeyNotFound && Options.ConfigurationManager != null && exception is SecurityTokenSignatureKeyNotFoundException)
-			Options.ConfigurationManager.RequestRefresh();
+		if (options.RefreshOnIssuerKeyNotFound && options.ConfigurationManager != null && exception is SecurityTokenSignatureKeyNotFoundException)
+			options.ConfigurationManager.RequestRefresh();
 	}
 
-	private async Task<TokenValidationParameters> SetupTokenValidationParametersAsync(CancellationToken cancellationToken = default)
+	private static async Task<TokenValidationParameters> SetupTokenValidationParametersAsync(
+		TgsBearerOptions options,
+		CancellationToken cancellationToken = default)
 	{
-		var tokenValidationParameters = Options.TokenValidationParameters.Clone();
-		if (Options.ConfigurationManager is BaseConfigurationManager configurationManager)
+		var tokenValidationParameters = options.TokenValidationParameters.Clone();
+		if (options.ConfigurationManager is BaseConfigurationManager configurationManager)
 			tokenValidationParameters.ConfigurationManager = configurationManager;
 
-		if (Options.ConfigurationManager is not null)
+		if (options.ConfigurationManager is not null)
 		{
-			var tokenConfiguration = await Options.ConfigurationManager.GetConfigurationAsync(
+			var tokenConfiguration = await options.ConfigurationManager.GetConfigurationAsync(
 				cancellationToken).ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(tokenConfiguration.Issuer))

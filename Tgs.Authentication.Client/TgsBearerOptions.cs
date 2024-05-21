@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols;
@@ -17,7 +18,7 @@ public class TgsBearerOptions : AuthenticationSchemeOptions
 
 	public TokenValidationParameters TokenValidationParameters { get; set; } = new()
 	{
-		ValidateAudience = false
+		NameClaimType = ClaimTypes.NameIdentifier
 	};
 
 	public IList<TokenHandler> TokenHandlers { get; private set; }

@@ -41,18 +41,21 @@ public class TgsAuthenticateManagerTests
                 JsonWebKeyConverter.ConvertFromRSASecurityKey(
                     new RsaSecurityKey(rsa.ExportParameters(false)))));
 
-        var optionsAccessor = new OptionsWrapper<TgsBearerOptions>(new TgsBearerOptions
-        {
-            ClaimsIssuer = "https://localhost",
-            ConfigurationManager = new ConfigurationManager<TokenConfiguration>("/session/jwk", fakeConfigurationRetriever),
-            TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidAudiences = ["test"],
-                NameClaimType = ClaimTypes.NameIdentifier
-            }
-        });
+        var fakeOptionsMonitor = Substitute.For<IOptionsMonitor<TgsBearerOptions>>();
 
-        var sut = new TgsAuthenticateManager(optionsAccessor, NullLogger<TgsAuthenticateManager>.Instance);
+        _ = fakeOptionsMonitor.Get(Arg.Any<string>())
+            .Returns(new TgsBearerOptions
+            {
+                ClaimsIssuer = "https://localhost",
+                ConfigurationManager = new ConfigurationManager<TokenConfiguration>("/session/jwk", fakeConfigurationRetriever),
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = ["test"],
+                    NameClaimType = ClaimTypes.NameIdentifier
+                }
+            });
+
+        var sut = new TgsAuthenticateManager(fakeOptionsMonitor, NullLogger<TgsAuthenticateManager>.Instance);
 
         // Act
         var failures = new List<Exception>();

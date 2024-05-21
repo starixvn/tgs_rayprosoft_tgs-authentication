@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Tgs.Authentication.Actors;
 using System.Reflection;
 
-namespace Tgs.Authentication.IntegrationTests;
+namespace Tgs.Authentication.IntegrationTests.Stubs;
 
 internal class StubActorProxyFactory(IServiceProvider serviceProvider)
     : IActorProxyFactory

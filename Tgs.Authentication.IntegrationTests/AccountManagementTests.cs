@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Tgs.Authentication.Client;
+using Tgs.Authentication.IntegrationTests.Stubs;
 using Tgs.Authentication.Repositories.Entities;
 using Tgs.Authentication.Repositories.Entities.tgs2Schema;
 using Xunit.Abstractions;

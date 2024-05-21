@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Tgs.Authentication.Client.DependencyInjection;
@@ -23,8 +22,9 @@ public static class AuthenticationBuilderExtensions
 		string authenticationScheme,
 		Action<TgsBearerOptions> configuration)
 	{
-		builder.Services
-			.AddKeyedSingleton<TgsAuthenticateManager>(authenticationScheme);
+		_ = builder.Services
+			.AddOptions<TgsBearerOptions>(authenticationScheme)
+			.Configure(configuration);
 
 		return builder
 			.AddScheme<TgsBearerOptions, TgsBearerHandler>(authenticationScheme, configuration);

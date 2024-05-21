@@ -5,20 +5,13 @@ using Microsoft.Extensions.Options;
 namespace Tgs.Authentication.Client;
 
 internal class TgsBearerHandler(
+	TgsAuthenticateManager tgsAuthenticateManager,
 	IOptionsMonitor<TgsBearerOptions> optionsMonitor,
 	ILoggerFactory loggerFactory,
 	UrlEncoder urlEncoder)
 	: AuthenticationHandler<TgsBearerOptions>(optionsMonitor, loggerFactory, urlEncoder)
 {
 	private static readonly AuthenticateResult _ValidatorNotFound = AuthenticateResult.Fail("No SecurityTokenValidator available for token.");
-	private TgsAuthenticateManager _tgsAuthenticateManager = default!;
-
-	protected override Task InitializeHandlerAsync()
-	{
-		_tgsAuthenticateManager = Context.RequestServices.GetRequiredKeyedService<TgsAuthenticateManager>(Scheme.Name);
-
-		return base.InitializeHandlerAsync();
-	}
 
 	protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
 	{
@@ -32,7 +25,7 @@ internal class TgsBearerHandler(
 
 			var validationFailures = new List<Exception>(1);
 
-			var ticket = await _tgsAuthenticateManager.ValidateTokenAsync(
+			var ticket = await tgsAuthenticateManager.ValidateTokenAsync(
 				token,
 				Scheme.Name,
 				validationFailures,

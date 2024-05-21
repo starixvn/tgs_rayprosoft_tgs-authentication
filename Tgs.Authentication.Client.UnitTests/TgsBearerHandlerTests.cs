@@ -46,21 +46,11 @@ public class TgsBearerHandlerTests
                 JsonWebKeyConverter.ConvertFromRSASecurityKey(
                     new RsaSecurityKey(rsa.ExportParameters(false)))));
 
-        var optionsAccessor = new OptionsWrapper<TgsBearerOptions>(new TgsBearerOptions
-        {
-            ClaimsIssuer = "https://localhost",
-            ConfigurationManager = new ConfigurationManager<TokenConfiguration>("/session/jwk", fakeConfigurationRetriever),
-            TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidAudiences = ["test"],
-                NameClaimType = ClaimTypes.NameIdentifier
-            }
-        });
-
-        var authenticateManager = new TgsAuthenticateManager(optionsAccessor, NullLogger<TgsAuthenticateManager>.Instance);
         var fakeOptionsMonitor = Substitute.For<IOptionsMonitor<TgsBearerOptions>>();
+        var authenticateManager = new TgsAuthenticateManager(fakeOptionsMonitor, NullLogger<TgsAuthenticateManager>.Instance);
 
         var sut = new TgsBearerHandler(
+            authenticateManager,
             fakeOptionsMonitor,
             new LoggerFactory(),
             UrlEncoder.Default);
@@ -75,7 +65,16 @@ public class TgsBearerHandlerTests
             .Returns(authenticateManager);
 
         _ = fakeOptionsMonitor.Get(Arg.Is(authenticationScheme.Name))
-            .Returns(optionsAccessor.Value);
+            .Returns(new TgsBearerOptions
+            {
+                ClaimsIssuer = "https://localhost",
+                ConfigurationManager = new ConfigurationManager<TokenConfiguration>("/session/jwk", fakeConfigurationRetriever),
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = ["test"],
+                    NameClaimType = ClaimTypes.NameIdentifier
+                }
+            });
 
         httpContext.Request.Headers.Authorization = $"Bearer {token}";
 
